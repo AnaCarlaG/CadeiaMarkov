@@ -13,14 +13,14 @@ namespace CadeiaMarkov
         static void Main(string[] args)
         {
             var path = Path.Combine(Environment.CurrentDirectory, "Input", "entrada.txt");
-            //Read_CSV();
-             double[,] OutraMatriz = carregaMatriz(path,5,5);
+            double[,] OutraMatriz = Read_CSV(path);
 
-             static double[,] carregaMatriz(string arquivo, int linhas, int colunas)
+
+            static double[,] Read_CSV(string arquivo)
             {
                 StreamReader reader = new StreamReader(arquivo);
-                int linha = linhas;
-                int coluna = colunas;
+                int linha = int.Parse(reader.ReadLine());
+                int coluna = int.Parse(reader.ReadLine());
                 double[,] Matriz = new double[linha, coluna];
                 for (int i = 0; i < linha; i++)
                 {
@@ -29,52 +29,51 @@ namespace CadeiaMarkov
                         Matriz[i, j] = Convert.ToDouble(reader.ReadLine());
                     }
                 }
-                return Matriz;
-                
+                return InvertMatriz(Matriz, linha, coluna);
             }
-            
-            static void Read_CSV()
+
+            static double[,] InvertMatriz(double[,] matriz, int linhas, int colunas)
             {
-                var path = Path.Combine(Environment.CurrentDirectory, "Input", "entrada.csv");
-
-                var file = new FileInfo(path);
-                if (!file.Exists)
+                double[,] novaMatriz = new double[linhas, colunas];
+                double value = 0, max = 0;
+                int l = 0, c = 0;
+                List<double> lista = new List<double>();
+                for (int linha = 0; linha < linhas; linha++)
                 {
-                    throw new FileNotFoundException($"File {path} doens't exist");
+                    for (int coluna = 0; coluna < colunas; coluna++)
+                    {
+                        novaMatriz[linha, coluna] = matriz[linha, coluna];
+                        value += InverterValores(novaMatriz[linha, coluna]);
+                        if (matriz[linha, coluna] == 0 && linha == coluna)
+                        {
+                            l = linha;
+                            c = coluna;
+                        }
+                        lista.Add(Math.Abs(value));
+                    }
+                    max = lista.Max();
+                    novaMatriz[l, c] = value;
+                    value = 0;
                 }
-                using var sr = new StreamReader(file.FullName);
-                var csvConfig = new CsvConfiguration(CultureInfo.InvariantCulture) { Delimiter = ";" };
-                using var csvReader = new CsvReader(sr, csvConfig);
-
-                List<string> matrizString = new List<string>();
-                double[,] mat = new double[5,5];
-
-                var registros = csvReader.GetRecords<dynamic>().ToArray();
-
-                foreach (var item in registros)
-                {
-                    
-                    matrizString.Add(item.A);
-                    matrizString.Add(item.B);
-                    matrizString.Add(item.C);
-                    matrizString.Add(item.D);
-                    matrizString.Add(item.E);
-                    matrizString.Add("#");
-
-                    AddMatriz(mat, matrizString,5);
-
-                }
-                Console.WriteLine("----------------");
+                var i = DividiMatriz(novaMatriz,max);
+                return i;
             }
-            static void AddMatriz(double[,] mat, List<String> m, int tamanhoVetor)
+
+            static double InverterValores(double value)
             {
-                int count = -1;
-                count ++;
-                for(int i = 0; i < tamanhoVetor; i++)
+                return value * -1;
+            }
+            static double[,] DividiMatriz(double[,] mat, double max)
+            {
+                var len = mat.GetLength(1);
+                for (int linha = 0; linha < len; linha++)
                 {
-                    mat[count,i] = Convert.ToDouble(m[i]);
+                    for (int coluna = 0; coluna < len; coluna++)
+                    {
+                        mat[linha, coluna] = max > 0 ? mat[linha, coluna] / max : mat[linha, coluna];
+                    }
                 }
-                
+                return mat;
             }
         }
     }
