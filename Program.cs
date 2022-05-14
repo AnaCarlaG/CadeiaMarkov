@@ -13,23 +13,27 @@ namespace CadeiaMarkov
         static void Main(string[] args)
         {
             var path = Path.Combine(Environment.CurrentDirectory, "Input", "entrada.txt");
-            double[,] OutraMatriz = Read_CSV(path);
+            var path2 = Path.Combine(Environment.CurrentDirectory, "Input", "identidade.txt");
+            double[,] outraMatriz = Soma(Read_CSV(path,true),Read_CSV(path2,false));
 
 
-            static double[,] Read_CSV(string arquivo)
+            static double[,] Read_CSV(string arquivo, bool invert)
             {
                 StreamReader reader = new StreamReader(arquivo);
                 int linha = int.Parse(reader.ReadLine());
                 int coluna = int.Parse(reader.ReadLine());
-                double[,] Matriz = new double[linha, coluna];
+                double[,] matriz = new double[linha, coluna];
                 for (int i = 0; i < linha; i++)
                 {
                     for (int j = 0; j < coluna; j++)
                     {
-                        Matriz[i, j] = Convert.ToDouble(reader.ReadLine());
+                        matriz[i, j] = Convert.ToDouble(reader.ReadLine());
                     }
                 }
-                return InvertMatriz(Matriz, linha, coluna);
+                if(invert){
+                    return InvertMatriz(matriz, linha, coluna);;
+                }
+                return matriz;
             }
 
             static double[,] InvertMatriz(double[,] matriz, int linhas, int colunas)
@@ -55,8 +59,7 @@ namespace CadeiaMarkov
                     novaMatriz[l, c] = value;
                     value = 0;
                 }
-                var i = DividiMatriz(novaMatriz,max);
-                return i;
+                return DividiMatriz(novaMatriz,max);
             }
 
             static double InverterValores(double value)
@@ -74,6 +77,19 @@ namespace CadeiaMarkov
                     }
                 }
                 return mat;
+            }
+            static double[,] Soma(double[,] matrizA, double[,] matrizB){
+                var len = matrizB.GetLength(1);
+                double[,] matrizC = new double[len,len];
+                for (int linha = 0; linha < len; linha++)
+                {
+                    for (int coluna = 0; coluna < len; coluna++)
+                    {
+                        var aux = matrizA[linha,coluna] + matrizB[linha,coluna];
+                        matrizC[linha,coluna] = Math.Abs(aux);
+                    }
+                }
+                return matrizC;
             }
         }
     }
