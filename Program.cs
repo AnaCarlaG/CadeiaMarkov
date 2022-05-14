@@ -14,83 +14,11 @@ namespace CadeiaMarkov
         {
             var path = Path.Combine(Environment.CurrentDirectory, "Input", "entrada.txt");
             var path2 = Path.Combine(Environment.CurrentDirectory, "Input", "identidade.txt");
-            double[,] outraMatriz = Soma(Read_CSV(path,true),Read_CSV(path2,false));
+            var path3 = Path.Combine(Environment.CurrentDirectory, "Input", "vetorStart.txt");
 
-
-            static double[,] Read_CSV(string arquivo, bool invert)
-            {
-                StreamReader reader = new StreamReader(arquivo);
-                int linha = int.Parse(reader.ReadLine());
-                int coluna = int.Parse(reader.ReadLine());
-                double[,] matriz = new double[linha, coluna];
-                for (int i = 0; i < linha; i++)
-                {
-                    for (int j = 0; j < coluna; j++)
-                    {
-                        matriz[i, j] = Convert.ToDouble(reader.ReadLine());
-                    }
-                }
-                if(invert){
-                    return InvertMatriz(matriz, linha, coluna);;
-                }
-                return matriz;
-            }
-
-            static double[,] InvertMatriz(double[,] matriz, int linhas, int colunas)
-            {
-                double[,] novaMatriz = new double[linhas, colunas];
-                double value = 0, max = 0;
-                int l = 0, c = 0;
-                List<double> lista = new List<double>();
-                for (int linha = 0; linha < linhas; linha++)
-                {
-                    for (int coluna = 0; coluna < colunas; coluna++)
-                    {
-                        novaMatriz[linha, coluna] = matriz[linha, coluna];
-                        value += InverterValores(novaMatriz[linha, coluna]);
-                        if (matriz[linha, coluna] == 0 && linha == coluna)
-                        {
-                            l = linha;
-                            c = coluna;
-                        }
-                        lista.Add(Math.Abs(value));
-                    }
-                    max = lista.Max();
-                    novaMatriz[l, c] = value;
-                    value = 0;
-                }
-                return DividiMatriz(novaMatriz,max);
-            }
-
-            static double InverterValores(double value)
-            {
-                return value * -1;
-            }
-            static double[,] DividiMatriz(double[,] mat, double max)
-            {
-                var len = mat.GetLength(1);
-                for (int linha = 0; linha < len; linha++)
-                {
-                    for (int coluna = 0; coluna < len; coluna++)
-                    {
-                        mat[linha, coluna] = max > 0 ? mat[linha, coluna] / max : mat[linha, coluna];
-                    }
-                }
-                return mat;
-            }
-            static double[,] Soma(double[,] matrizA, double[,] matrizB){
-                var len = matrizB.GetLength(1);
-                double[,] matrizC = new double[len,len];
-                for (int linha = 0; linha < len; linha++)
-                {
-                    for (int coluna = 0; coluna < len; coluna++)
-                    {
-                        var aux = matrizA[linha,coluna] + matrizB[linha,coluna];
-                        matrizC[linha,coluna] = Math.Abs(aux);
-                    }
-                }
-                return matrizC;
-            }
+            Matriz matriz = new Matriz();
+            double[,] outraMatriz = matriz.Soma(matriz.Read_Matriz(path,true),matriz.Read_Matriz(path2,false));
+           var vetor= matriz.TransformVector(matriz.Read_Vetor(path3), outraMatriz);
         }
     }
 }
