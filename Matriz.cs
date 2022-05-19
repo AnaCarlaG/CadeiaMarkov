@@ -164,6 +164,7 @@ namespace CadeiaMarkov
                 converg = Teste(vetorComparativo, vetorResultante, tolerancia);
                 if (converg)
                 {
+                    Console.Write("Repetiu: ");
                     PrintVetor(vetorResultante, tolerancia.ToString().Substring(tolerancia.ToString().LastIndexOf(",") + 1).Length);
                     Console.WriteLine("Quantidade iterações: " + iteracao);
                 } else{
