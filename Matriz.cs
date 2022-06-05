@@ -67,7 +67,7 @@ namespace CadeiaMarkov
             {
                 for (int coluna = 0; coluna < len; coluna++)
                 {
-                    mat[linha, coluna] = max > 0 ? mat[linha, coluna] / max : mat[linha, coluna];
+                    mat[linha, coluna] = mat[linha, coluna] / max;
                 }
             }
             return mat;
@@ -102,14 +102,7 @@ namespace CadeiaMarkov
             {
                 for (int coluna = 0; coluna < len; coluna++)
                 {
-                    if (vetor[coluna] != 0)
-                    {
-                        vetorResultante[linha] += 1 * matrizResult[linha, coluna];
-                    }
-                    else
-                    {
-                        vetorResultante[linha] += vetorResultante != null ? matrizResult[linha, coluna] * 0 : vetorResultante[linha];
-                    }
+                    vetorResultante[linha] += vetor[coluna] * matrizResult[coluna, linha];
                 }
             }
             int iteracao = 1;
@@ -133,6 +126,8 @@ namespace CadeiaMarkov
                 vetorAntigo = result;
                 iteracao++;
 
+                
+
                 if (converg)
                 {
                     break;
@@ -148,7 +143,7 @@ namespace CadeiaMarkov
             {
                 for (int coluna = 0; coluna < vetorResultante.Count(); coluna++)
                 {
-                    vetorComparativo[coluna] += vetorResultante[linha] * matriz[linha, coluna];
+                    vetorComparativo[linha] += vetorResultante[coluna] * matriz[coluna, linha];
                 }
             }
             return vetorComparativo;
